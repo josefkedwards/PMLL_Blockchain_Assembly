@@ -1,0 +1,96 @@
+.section .data
+state_zero:
+    .byte 0          # Represents binary state 0
+state_one:
+    .byte 1          # Represents binary state 1
+
+.section .text
+.global init_space
+.global read_state
+.global write_state
+.global toggle_state
+.global free_space
+
+# Initialize a computation space
+# Inputs:
+#   rdi - Size of the space to allocate
+# Outputs:
+#   rax - Pointer to allocated space
+init_space:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq %rdi, %rsi               # Size to allocate in rsi
+    movq $9, %rdi                 # mmap flags: anonymous & private
+    movq $0, %rax                 # mmap syscall number
+    syscall                       # Call mmap
+    testq %rax, %rax              # Check if mmap failed
+    jz space_alloc_failed
+
+    leave
+    ret
+
+space_alloc_failed:
+    movq $-1, %rax                # Return -1 for failure
+    leave
+    ret
+
+# Read the state at a given position
+# Inputs:
+#   rdi - Pointer to space
+#   rsi - Index to read
+# Outputs:
+#   al - Binary state (0 or 1)
+read_state:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq %rdi, %rax               # Base address of space in rax
+    addq %rsi, %rax               # Calculate address of target index
+    movb (%rax), %al              # Load the state
+    leave
+    ret
+
+# Write a state to a given position
+# Inputs:
+#   rdi - Pointer to space
+#   rsi - Index to write
+#   rdx - State (0 or 1)
+write_state:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq %rdi, %rax               # Base address of space in rax
+    addq %rsi, %rax               # Calculate address of target index
+    movb %dl, (%rax)              # Write the state
+    leave
+    ret
+
+# Toggle the state at a given position
+# Inputs:
+#   rdi - Pointer to space
+#   rsi - Index to toggle
+toggle_state:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    call read_state               # Read the current state
+    xorb $1, %al                  # Toggle state (0 -> 1, 1 -> 0)
+    movb %al, (%rax)              # Write the toggled state
+    leave
+    ret
+
+# Free the computation space
+# Inputs:
+#   rdi - Pointer to space
+#   rsi - Size of space
+free_space:
+    pushq %rbp
+    movq %rsp, %rbp
+
+    movq %rdi, %rdi               # Address of space in rdi
+    movq %rsi, %rsi               # Size of space in rsi
+    movq $11, %rax                # munmap syscall number
+    syscall                       # Call munmap
+    leave
+    ret
