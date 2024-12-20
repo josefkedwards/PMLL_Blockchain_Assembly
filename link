@@ -1,0 +1,35 @@
+.section .text
+.global _start
+
+# Global references to other modules
+.extern while_loop
+.extern for_loop
+.extern if_else
+
+# Central entry point
+_start:
+    # Initialize program state
+    call init_program
+
+    # Execute While Loop
+    call while_loop
+
+    # Execute For Loop
+    call for_loop
+
+    # Execute If-Else Logic
+    call if_else
+
+    # Exit program
+    call program_exit
+
+init_program:
+    # Initialization logic (if any)
+    movq $0, %rax         # Placeholder for initialization
+    ret
+
+program_exit:
+    # Exit system call
+    movq $60, %rax        # Syscall: exit
+    xorq %rdi, %rdi       # Exit code: 0
+    syscall
