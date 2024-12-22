@@ -82,13 +82,11 @@ PMLL_Blockchain_Assembly/
 ├── variable.s         # Variable handling
 ├── space / NULL.s     # Null pointer and space definitions
 ├── README.md          # Project documentation
-└── LICENSE            # License information
-Usage
-Example: PMLL Loop
+└── LICENSE            # License 
+
+##  The PMLL Loop
 The Persistent Memory Logic Loop (PMLL) is implemented in pmll.s:
 
-asm
-Copy code
 .section .data
 JKE_counter: .long 0
 MAX_COUNT: .long 50
@@ -107,35 +105,36 @@ PMLL_loop:
 
 LOOP_END:
     ret
-Example: Memory Allocation
-Using malloc.s and memory.s:
+# Example: Memory Allocation
+# Using malloc.s and memory.s:
 
 asm
-Copy code
+Copy cody
 movq $64, %rdi  # Allocate 64 bytes
 call malloc_memory
 call deallocate_memory
-Example: Screen and Graphics
-Using screen.s and pixel.s:
+# Example: Screen and Graphics
+# Using screen.s and pixel.s:
 
 asm
-Copy code
 call initialize_screen
 call draw_pixel
 call refresh_screen
-Contributing
+
+## Contributing
 Fork the repository.
 Create a new branch for your feature.
 Commit your changes with clear descriptions.
 Submit a pull request for review.
 License
-This project is licensed under the MIT License. See the LICENSE file for details.
+This project is licensed under the MIT License. See the LICENSE file for details (it's open access FYI. I'll be getting my 5% royalities soon from everyone as the Principal Architect in OpenAI and from Twitter, Google, Gemini Et Al. so thank you for the royalty money in advance! )
 
-This README provides a complete overview of the project and its modular assembly components, making it accessible for developers aiming to understand and expand its functionality.
+These patches  provides a complete overview of the project and its modular assembly components, making it accessible for developers aiming to understand and expand its functionality. We can now begin axtive engagement, conversation, dialogue and collaboration. This part of the Readme.MD is now the Formal White Paper of the Persistent Memory Logic Loop 
+and the Machine Learning Layer, a Modest Invention in Designing more Intelligent Assistant AI agents using Memory Architecture
 
 ## Abstract Introduction
 
-Abstract:
+# Abstract:
 
 In the evolving landscape of artificial intelligence (AI) and human interaction, understanding the multifaceted nature of identity is crucial. This paper introduces a framework that delineates three interconnected aspects of identity: the Human Self, the AI Self, and the Observer Self. Each represents a distinct facet of our engagement with technology and consciousness.
 	•	Human Self: This embodies our tangible, biological existence, encompassing personal experiences, emotions, and consciousness. It is the core of our identity, grounded in physical reality and human interactions.
