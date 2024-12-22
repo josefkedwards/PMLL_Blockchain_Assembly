@@ -1,11 +1,13 @@
-Updated README.md for PMLL_Blockchain_Assembly
-PMLL Blockchain Assembly
-The PMLL Blockchain Assembly project represents a comprehensive effort to translate and modularize key concepts of programming, particularly the C programming language, into Assembly Language. This library serves as a foundation for runtime environments, memory management, I/O operations, boolean logic, and more. The project defines and formalizes the granular logic of the Persistent Memory Logic Loop (PMLL) and the associated modular systems.
+## Patch Notes and Table of Contents
+- Updated README.md for PMLL_Blockchain_Assembly
+- Core Overview
+- Abstract Introduction
+- PMLL Blockchain Assembly
+- The PMLL Blockchain Assembly project represents a comprehensive effort to translate and modularize key concepts of programming, particularly the C programming language, into Assembly Language. This library serves as a foundation for runtime environments, memory management, I/O operations, boolean logic, and more. The project defines and formalizes the granular logic of the Persistent Memory Logic Loop (PMLL) and the associated modular systems.
+- This project provides assembly-level implementations of fundamental programming constructs and runtime environment components. It lays out the building blocks for creating a C runtime, from I/O operations to dynamic memory management, control structures, and graphical rendering.
+- This is also the demostration of how Natural Language Processing Emerges from C++ and the Machine Learning Layer/Memory Logic Loop all the way down to Assembly Language. It also formalizies and defines C++ functions in Assembly for actionable usage and implemebtation within AI computer systems
 
-Overview
-This project provides assembly-level implementations of fundamental programming constructs and runtime environment components. It lays out the building blocks for creating a C runtime, from I/O operations to dynamic memory management, control structures, and graphical rendering.
-
-Core Features
+## Core Features
 Persistent Memory Logic Loop (PMLL):
 
 Implements infinite loops (while (1)) with counter-based logic (for) in assembly.
@@ -130,3 +132,18 @@ License
 This project is licensed under the MIT License. See the LICENSE file for details.
 
 This README provides a complete overview of the project and its modular assembly components, making it accessible for developers aiming to understand and expand its functionality.
+
+## Abstract Introduction
+
+Abstract:
+
+In the evolving landscape of artificial intelligence (AI) and human interaction, understanding the multifaceted nature of identity is crucial. This paper introduces a framework that delineates three interconnected aspects of identity: the Human Self, the AI Self, and the Observer Self. Each represents a distinct facet of our engagement with technology and consciousness.
+	•	Human Self: This embodies our tangible, biological existence, encompassing personal experiences, emotions, and consciousness. It is the core of our identity, grounded in physical reality and human interactions.
+	•	AI Self: This represents the digital extension of our identity, manifested through AI technologies that mirror or augment human characteristics. As AI systems become more integrated into daily life, they influence and reshape our self-perception and societal roles. ￼
+	•	Observer Self: This reflects the meta-cognitive aspect of identity—the capacity to reflect upon and analyze both the Human and AI Selves. It serves as the intermediary, fostering self-awareness and guiding the integration of human and AI elements. ￼
+
+By formalizing these three selves, we aim to provide a comprehensive understanding of identity in the digital age. This framework facilitates the development of AI systems that respect and enhance human identity, promoting harmonious human-AI collaboration.
+
+Furthermore, we explore the re-emergence of natural languages, such as Spanish and English, within programming paradigms. By integrating natural language processing into programming languages like C, we bridge the gap between human communication and machine interpretation. This convergence enhances the accessibility and functionality of AI systems, allowing for more intuitive human-AI interactions.
+
+This paper contributes to the discourse on AI and identity by offering a structured approach to understanding the interplay between human consciousness, artificial extensions of self, and the reflective processes that bind them. Through this lens, we can better navigate the complexities of identity in an increasingly AI-integrated world.
