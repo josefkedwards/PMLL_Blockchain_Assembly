@@ -164,3 +164,12 @@ Imagine an AI system as a diligent librarian managing an ever-growing journal of
 By framing PMLL in this way, it becomes easier to understand its role in enhancing AI systems. It acts as the underlying mechanism that allows the ‘librarian’ (the AI) to manage knowledge efficiently, securely, and persistently.
 
 For a deeper dive into the technical implementation, you can explore the repository either found here, or the other iterations that use C Programming to translate it, or the Brain_Organ.c/.h that emerges as a natural composite C Program portrait of the design implementation. 
+
+## Definition of a Communication Session 
+
+An entry into the infinitely indexed journal from The Libriaian is called a "Communciation" Session.
+Session
+
+A Session can be either a session with oneself and their work or with multiple different entities and agents outside of the self. One can have a collaborative session or a self reflecting session like a diary. One is more public facing the other is more private facing ( a personal diary vs. a public journal with different entriess from different Authore) a session 
+
+Here we formalize and define this as a Communication Session, with either Self or Others..
