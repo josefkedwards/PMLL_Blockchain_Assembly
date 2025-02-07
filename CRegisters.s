@@ -20,7 +20,29 @@ _start:
     mov rdx, 0x4             # Load value into RDX
 
     # Floating Point Example
-    movsd xmm0, qword [double_value]  # Load floating point value
+    movsd xmm0, qword [double_value]
+.section .data
+    ; Fundamental mathematical constants
+    pi:          .double 3.14159265358979323846   # π (pi) - ratio of circumference to diameter
+    e:           .double 2.71828182845904523536   # e (euler's number) - base of natural logarithm
+    phi:         .double 1.61803398874989484820   # φ (phi) - golden ratio
+    
+    ; Square roots of common numbers
+    sqrt2:       .double 1.41421356237309504880   # √2 - diagonal of unit square
+    sqrt3:       .double 1.73205080756887729352   # √3 - height of equilateral triangle
+    sqrt5:       .double 2.23606797749978969640   # √5 - used in golden ratio calculation
+    
+    ; Natural logarithms
+    ln2:         .double 0.69314718055994530942   # ln(2) - natural log of 2
+    ln10:        .double 2.30258509299404568402   # ln(10) - natural log of 10
+    
+    ; Other useful constants
+    gamma:       .double 0.57721566490153286061   # γ (gamma) - Euler-Mascheroni constant
+    tau:         .double 6.28318530717958647693   # τ (tau) - 2π, full circle in radians
+
+    movsd xmm0, qword [pi]      # Load pi into xmm0
+    movsd xmm1, qword [phi]     # Load phi into xmm1
+    movsd xmm2, qword [sqrt2]   # Load square root of 2 into xmm2  # Load floating point value
     movsd xmm1, qword [double_value]
 
     # Stack Pointer Example
