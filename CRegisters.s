@@ -142,3 +142,50 @@ exit_error:
     syscall
     ret
 
+;------------------------------------------------------------------------------
+; print_string - Prints a null-terminated string to stdout
+;
+; Description:
+; Safely prints a null-terminated string to standard output with proper
+; error handling and stack frame management.
+;
+; Parameters:
+; rdi - Address of the null-terminated string to print
+;
+; Returns:
+; rax - Number of bytes written (if successful)
+; On error: Exits program with status code 1
+;
+; Clobbers:
+; rax, rcx, rdx, rsi
+;
+; Notes:
+; - Automatically calculates string length
+; - Preserves base pointer
+; - Handles syscall errors
+;------------------------------------------------------------------------------
+print_string:
+push rbp # Save base pointer
+mov rbp, rsp # Set up stack frame
+mov rax, 1 # syscall: sys_write
+mov rdi, 1 # File descriptor (stdout)
+mov rsi, rdi # Message address from parameter
+mov rdx, 0 # Initialize length
+mov rcx, rsi # Copy string address
+.strlen: # Calculate string length
+cmp byte [rcx], 0 # Check for null terminator
+je .print # If found, print string
+inc rdx # Increment length
+inc rcx # Move to next character
+jmp .strlen # Continue counting
+.print:
+syscall
+cmp rax, 0 # Check for error
+jl .error # Handle error if negative
+pop rbp # Restore base pointer
+ret
+.error:
+mov rax, 60 # Exit on error
+mov rdi, 1 # Error code 1
+syscall
+
