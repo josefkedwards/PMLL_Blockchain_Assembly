@@ -173,10 +173,11 @@ _start:
     movsd xmm1, qword [double_value]
 
     # === Stack Operations ===
-    mov rsp, stack_base      # Set Stack Pointer
-    push rax                 # Push RAX onto stack
-    pop rbx                  # Pop into RBX (ohhhhhh you gonna pop in like a drag queen for a Story Hour with republicans and democrats @trixielmatel? @Katya?)
-    mov rdi, msg_stack       # Stack success message
+    mov rsp, stack_base          # Set Stack Pointer+    
+    lea rsp, [stack_base + 8192] # Point to top of stack
+    push rax                     # Push RAX onto stack
+    pop rbx                      # Pop into RBX (ohhhhhh you gonna pop in like a drag queen for a Story Hour with republicans and democrats @trixielmatel? @Katya?)
+    mov rdi, msg_stack           # Stack success message
     call print_string
 
     # === Heap Operations (Simulated) ===
