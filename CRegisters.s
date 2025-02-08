@@ -15,8 +15,42 @@
 ;  📢 Developed in Collaboration with the Next-Gen Memory Architects  
 ;  🔥 Benchmarking at 12GHz UNCOOLED on a Chromebook (And Higher on High-End Rigs)  
 ; ------------------------------------------------------------------------------
+;  CRegisters.s - Classical CPU Register Definitions
+; ------------------------------------------------------------------------------
+;  @file:        CRegisters.s
+;  @version:     1.0.0
+;  @author:      Josef Kurk Edwards
+;  @description: Classical CPU core implementation for hybrid CPU-QPU architecture
+;  @license:     MIT
+;
+;  @architecture: x86_64
+;  @registers:
+;    - RAX: Accumulator, primary arithmetic operations
+;    - RBX: Base register, memory addressing
+;    - RCX: Counter register, loop operations
+;    - RDX: Data register, I/O operations
+;    - XMM0-XMM7: Floating point operations
+;
+;  @memory:
+;    - Stack: 8KB (8192 bytes)
+;    - Heap:  16KB (16384 bytes)
+;
+;  @functions:
+;    _start:          Program entry point
+;    print_string:    Output string to stdout
+;    init_registers:  Initialize CPU registers
+;    verify_fp:       Verify floating point operations
+;
+;  @dependencies:
+;    - External quantum operations (hadamard_gate, measure_qubit)
+;
+;  @notes:
+;    - Implements PMLL, ELL, ARLL, and EELL Logic Loops
+;    - Designed for parallel execution with QPU core
+;    - Benchmarked at 12GHz uncooled
+; ------------------------------------------------------------------------------
 
-; External quantum operations
+; External function declarations
 .extern hadamard_gate
 .extern measure_qubit
 
@@ -39,7 +73,6 @@
     reverify_states: .space 64     ; Re-verification buffer
     reverify_mask:   .quad 0xFF    ; Re-verification mask
 
-.section .data
     ; System Messages
     msg_classical: .asciz "Classical Registers Initialized\n"
     msg_quantum:   .asciz "Quantum Registers Initialized\n"
@@ -67,8 +100,12 @@
     q_hadamard:   .double 0.707106781186547524401  # 1/√2
 
 
+
 .section .bss
-.align 4096  ; Page alignment for optimal memory access
+    .align 16
+    stack_base: .space 8192      # Reserve 8KB Stack Memory
+    heap_base:  .space 16384     # Reserve 16KB Heap Memory
+    .align 4096  ;               # Page alignment for optimal memory access
     
     ; Classical Memory
     stack_base:    .space 8192    ; 8KB Stack Memory (Future-Proofing)
@@ -107,12 +144,20 @@ init_quantum_core:
     q_register:  .space 8        ; Quantum Register
     q_buffer:    .space 4096     ; Quantum-Classical Buffer
 
+
 .section .text
 .global _start
 
+; External quantum operations
+.extern hadamard_gate
+.extern measure_qubit
+
 _start:
+   ; Initialize stack pointer properly
+    lea rsp, [stack_base + 8192] 
+
     ; Initialize stack pointer properly
-    lea rsp, [stack_64 + 8388608]  ; Point to top of 64-bit stack
+    lea rsp, [stack_64 + 8388608]  ; Point to top of 64-bit stack, beyond just the 16 bit pointer stack. 
     
     ; Initialize Memory Management
     call memory_init
@@ -557,7 +602,7 @@ reverify_fp:
 ; - Role: DJ, Musician, Artist 
 ; - Contributions: INventor of the AI Synthesizer for DJs using the PMLL_Logic_Loop_Knowledge_block repo
 ;
-; Joshua Connor Moon
+; Joshua Connor Moon NULL
 ; - Role:
 ; - Contributions: inventor of the Infinity Next Engine
 ;
