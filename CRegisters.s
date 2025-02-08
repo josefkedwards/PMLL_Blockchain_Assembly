@@ -291,16 +291,28 @@ mov rdi, 1 # Error code 1
 syscall
 
 ; === Quantum Operations ===
-init_qubits:
-    mov rax, qubits
-    mov rbx, 0
-init_loop:
-    mov [rax + rbx], alpha     ; Set |0⟩ coefficient
-    mov [rax + rbx + 4], beta  ; Set |1⟩ coefficient
-    add rbx, 8
-    cmp rbx, 64
-    jl init_loop
-    ret
+ init_qubits:
+     push rbp
+     mov rbp, rsp
+     mov rax, qubits
+     mov rbx, 0
+ init_loop:
+     mov [rax + rbx], alpha     ; Set |0⟩ coefficient
+     mov [rax + rbx + 4], beta  ; Set |1⟩ coefficient
+     add rbx, 8
+     cmp rbx, 64
+     jl init_loop
+     ; Validate initialization
+     call verify_quantum_state
+     test rax, rax
+     jz quantum_error
+     pop rbp
+     ret
+
+ quantum_error:
+    mov rdi, msg_error
+     call print_string
+     call exit_error
 
 apply_hadamard:
     mov rax, qubits
