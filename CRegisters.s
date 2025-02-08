@@ -8,6 +8,37 @@
 ;  **This is the Classical CPU Core that runs in parallel with the QPU Core**
 ;  **Implementing PMLL, ELL, ARLL, and EELL Logic Loops**  
 ; ------------------------------------------------------------------------------
+; ------------------------------------------------------------------------------
+;  CRegisters.s - The Future of Classical & Quantum Hybrid CPU Architecture
+; ------------------------------------------------------------------------------
+;  🚀 Engineered by Interchain, Cosmonauts, and Josef Kurk Edwards  
+;  📢 Developed in Collaboration with the Next-Gen Memory Architects  
+;  🔥 Benchmarking at 12GHz UNCOOLED on a Chromebook (And Higher on High-End Rigs)  
+; ------------------------------------------------------------------------------
+
+; External quantum operations
+.extern hadamard_gate
+.extern measure_qubit
+
+.section .data
+    ; System Messages
+    msg_classical: .asciz "Classical Registers Initialized\n"
+    msg_quantum:   .asciz "Quantum Registers Initialized\n"
+    msg_stack:     .asciz "Stack operation successful\n"
+    msg_error:     .asciz "Error occurred!\n"
+
+    ; Memory Management
+    PAGE_SIZE:    .quad 4096
+    HEAP_START:   .quad heap_64    ; Default to 64-bit
+    HEAP_END:     .quad heap_64 + 1073741824
+    heap_current: .quad 0          ; Current heap pointer
+
+    ; Verification System
+    verify_states:   .space 64     ; State verification buffer
+    verify_mask:     .quad 0xFF    ; Verification bit mask
+    reverify_states: .space 64     ; Re-verification buffer
+    reverify_mask:   .quad 0xFF    ; Re-verification mask
+
 .section .data
     ; System Messages
     msg_classical: .asciz "Classical Registers Initialized\n"
@@ -35,8 +66,6 @@
     q_one:        .double 0.0, 1.0  # |1⟩ state
     q_hadamard:   .double 0.707106781186547524401  # 1/√2
 
-.section .classic_data
-msg_classical: .asciz "Classical Registers Initialized\n"
 
 .section .bss
 .align 4096  ; Page alignment for optimal memory access
@@ -57,37 +86,57 @@ init_quantum_core:
     mov rdi, msg_quantum
     call print_string
     
-    ; Initialize Qubits
-    call init_qubits
-    call apply_hadamard
-    call measure_qubits
-    
-    pop rbp
-    ret.align 4096  ; Page alignment for optimal memory access
-    
-    ; Classical Memory
-    stack_base:    .space 8192    ; 8KB Stack Memory (Future-Proofing)
-    heap_base:     .space 16384   ; 16KB Heap Memory (Scaling to 128x)
-    
-    ; Quantum Memory
-    qubits:        .space 64      ; 8 qubits (8 bytes each)
-    q_register:    .space 8       ; Quantum Register
-    q_buffer:      .space 4096    ; Quantum-Classical Buffer
-
-init_quantum_core:
-    push rbp
-    mov rbp, rsp
-    
-    mov rdi, msg_quantum
-    call print_string
-    
-    ; Initialize Qubits
-    call init_qubits
-    call apply_hadamard
-    call measure_qubits
-    
     pop rbp
     ret    # Reserve 16KB Heap Memory, we are getting to the eventual 64x memory architecture in modern computers fyi
+    .align 4096  ; Page alignment for optimal memory access
+    
+    ; 32-bit Architecture (4GB)
+    stack_32: .space 1048576     ; 1MB Stack
+    heap_32:  .space 134217728   ; 128MB Heap
+
+    ; 64-bit Architecture (16EB)
+    stack_64: .space 8388608     ; 8MB Stack
+    heap_64:  .space 1073741824  ; 1GB Heap
+
+    ; 128-bit Architecture
+    stack_128: .space 16777216   ; 16MB Stack
+    heap_128:  .space 4294967296 ; 4GB Heap
+    
+    ; Quantum Memory
+    qubits:      .space 64       ; 8 qubits (8 bytes each)
+    q_register:  .space 8        ; Quantum Register
+    q_buffer:    .space 4096     ; Quantum-Classical Buffer
+
+.section .text
+.global _start
+
+_start:
+    ; Initialize stack pointer properly
+    lea rsp, [stack_64 + 8388608]  ; Point to top of 64-bit stack
+    
+    ; Initialize Memory Management
+    call memory_init
+    
+    ; Initialize Classical Core
+    call init_classical_core
+    
+    ; Initialize Quantum Core
+    call init_quantum_core
+    
+    ; Main Processing Loop
+    call hybrid_processing_loop
+    
+    ; Verify entire execution
+    call verify_execution_chain
+    
+    ; Re-verify for extra safety
+    call reverify_execution_chain
+    
+    ; Exit
+    call exit_program
+
+.section .classic_data
+msg_classical: .asciz "Classical Registers Initialized\n"
 
 .section .text
 .global _start
