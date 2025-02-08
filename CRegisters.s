@@ -9,7 +9,6 @@
 ;  **Implementing PMLL, ELL, ARLL, and EELL Logic Loops**  
 ; ------------------------------------------------------------------------------
 .section .data
-.section .data
     ; System Messages
     msg_classical: .asciz "Classical Registers Initialized\n"
     msg_quantum:   .asciz "Quantum Registers Initialized\n"
