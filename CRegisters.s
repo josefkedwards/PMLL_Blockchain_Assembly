@@ -9,6 +9,7 @@
 ;  **Implementing PMLL, ELL, ARLL, and EELL Logic Loops**  
 ; ------------------------------------------------------------------------------
 .section .data
+.section .data
     ; System Messages
     msg_classical: .asciz "Classical Registers Initialized\n"
     msg_quantum:   .asciz "Quantum Registers Initialized\n"
@@ -35,15 +36,112 @@
     q_one:        .double 0.0, 1.0  # |1⟩ state
     q_hadamard:   .double 0.707106781186547524401  # 1/√2
 
-.section .data
+.section .classic_data
 msg_classical: .asciz "Classical Registers Initialized\n"
 
 .section .bss
-stack_base: .space 8192      # Reserve 8KB Stack Memory
-heap_base: .space 16384       # Reserve 16KB Heap Memory, we are getting to the eventual 64x memory architecture in modern computers fyi
+.align 4096  ; Page alignment for optimal memory access
+    
+    ; Classical Memory
+    stack_base:    .space 8192    ; 8KB Stack Memory (Future-Proofing)
+    heap_base:     .space 16384   ; 16KB Heap Memory (Scaling to 128x)
+    
+    ; Quantum Memory
+    qubits:        .space 64      ; 8 qubits (8 bytes each)
+    q_register:    .space 8       ; Quantum Register
+    q_buffer:      .space 4096    ; Quantum-Classical Buffer
+
+init_quantum_core:
+    push rbp
+    mov rbp, rsp
+    
+    mov rdi, msg_quantum
+    call print_string
+    
+    ; Initialize Qubits
+    call init_qubits
+    call apply_hadamard
+    call measure_qubits
+    
+    pop rbp
+    ret.align 4096  ; Page alignment for optimal memory access
+    
+    ; Classical Memory
+    stack_base:    .space 8192    ; 8KB Stack Memory (Future-Proofing)
+    heap_base:     .space 16384   ; 16KB Heap Memory (Scaling to 128x)
+    
+    ; Quantum Memory
+    qubits:        .space 64      ; 8 qubits (8 bytes each)
+    q_register:    .space 8       ; Quantum Register
+    q_buffer:      .space 4096    ; Quantum-Classical Buffer
+
+init_quantum_core:
+    push rbp
+    mov rbp, rsp
+    
+    mov rdi, msg_quantum
+    call print_string
+    
+    ; Initialize Qubits
+    call init_qubits
+    call apply_hadamard
+    call measure_qubits
+    
+    pop rbp
+    ret    # Reserve 16KB Heap Memory, we are getting to the eventual 64x memory architecture in modern computers fyi
 
 .section .text
 .global _start
+
+; Add to .data section
+verify_states: .space 64     # State verification buffer
+verify_mask:   .quad 0xFF    # Verification bit mask
+
+; Add new verification functions
+verify_print:
+    push rbp
+    mov rbp, rsp
+    ; Verify print operation succeeded
+    test rax, rax
+    js .verify_failed
+    ; Store verification state
+    or byte [verify_states], 1
+    pop rbp
+    ret
+
+verify_registers:
+    push rbp
+    mov rbp, rsp
+    ; Verify register states
+    cmp rax, 0x1
+    jne .verify_failed
+    cmp rbx, 0x2
+    jne .verify_failed
+    ; Store verification state
+    or byte [verify_states + 1], 1
+    ; Verify previous print state
+    test byte [verify_states], 1
+    jz .verify_failed
+    pop rbp
+    ret
+
+verify_fp:
+    push rbp
+    mov rbp, rsp
+    ; Verify FP operations
+    movsd xmm3, qword [pi]
+    ucomisd xmm0, xmm3
+    jne .verify_failed
+    ; Verify previous states
+    test byte [verify_states + 1], 1
+    jz .verify_failed
+    pop rbp
+    ret
+
+.verify_failed:
+    mov rdi, msg_error
+    call print_string
+    call exit_error
 
 _start:
     # Print initialization message
@@ -58,82 +156,6 @@ _start:
 
     # Floating Point Example
     movsd xmm0, qword [double_value]
-.section .data
-    ; Mathematical Constants
-    .align 16
-    pi:          .double 3.14159265358979323846   # π (pi)
-    e:           .double 2.71828182845904523536   # e (euler's number)
-    phi:         .double 1.61803398874989484820   # φ (phi)
-    sqrt2:       .double 1.41421356237309504880   # √2
-    sqrt3:       .double 1.73205080756887729352   # √3
-    sqrt5:       .double 2.23606797749978969640   # √5
-    ln2:         .double 0.69314718055994530942   # ln(2)
-    ln10:        .double 2.30258509299404568402   # ln(10)
-    gamma:       .double 0.57721566490153286061   # γ (gamma)
-    tau:         .double 6.28318530717958647693   # τ (tau)
-
-    ; Quantum State Constants
-    alpha:        .float 0.707  # Coefficient for |0⟩
-    beta:         .float 0.707  # Coefficient for |1⟩
-    q_zero:       .double 1.0, 0.0  # |0⟩ state
-    q_one:        .double 0.0, 1.0  # |1⟩ state
-    q_hadamard:   .double 0.707106781186547524401  # 1/√2
-    ; Fundamental mathematical constants
-    pi:          .double 3.14159265358979323846   # π (pi) - ratio of circumference to diameter
-    e:           .double 2.71828182845904523536   # e (euler's number) - base of natural logarithm
-    phi:         .double 1.61803398874989484820   # φ (phi) - golden ratio
-    
-    ; Square roots of common numbers
-    sqrt2:       .double 1.41421356237309504880   # √2 - diagonal of unit square
-    sqrt3:       .double 1.73205080756887729352   # √3 - height of equilateral triangle
-    sqrt5:       .double 2.23606797749978969640   # √5 - used in golden ratio calculation
-    
-    ; Natural logarithms
-    ln2:         .double 0.69314718055994530942   # ln(2) - natural log of 2
-    ln10:        .double 2.30258509299404568402   # ln(10) - natural log of 10
-    
-    ; Other useful constants
-    gamma:       .double 0.57721566490153286061   # γ (gamma) - Euler-Mascheroni constant
-    tau:         .double 6.28318530717958647693   # τ (tau) - 2π, full circle in radians
-
-    movsd xmm0, qword [pi]      # Load pi into xmm0
-    movsd xmm1, qword [phi]     # Load phi into xmm1
-    movsd xmm2, qword [sqrt2]   # Load square root of 2 into xmm2  # Load floating point value
-    movsd xmm1, qword [double_value] # Make and Load a double value for anything found within the register qword
-
-    # Stack Pointer Example
-    mov rsp, stack_base      # Set stack pointer
-    push rax                 # Push RAX onto stack
-    pop rbx                  # Pop into RBX
-
-    # End program
-    mov rax, 60              # syscall: exit()
-    xor rdi, rdi             # Exit code 0
-    syscall
-
-print_string:
-    mov rax, 1               # syscall: sys_write
-    mov rdi, 1               # File descriptor (stdout)
-    mov rsi, rdi             # Message address
-    mov rdx, 100             # Max length
-    syscall
-    ret
-
-.section .data
-double_value: .double 3.14159  # Example floating point value
-
-.section .bss
-stack_base: .space 8192      # Reserve 8KB Stack Memory (for function calls)
-heap_base: .space 16384      # Reserve 16KB Heap Memory (for dynamic allocation)
-
-.section .data
-msg_classical: .asciz "Classical Registers Initialized\n"
-msg_stack: .asciz "Stack operation successful\n"
-msg_error: .asciz "Error occurred!\n"
-double_value: .double 3.14159  
-
-.section .text
-.global _start
 
 # === Entry Point ===
 _start:
@@ -268,33 +290,6 @@ mov rax, 60 # Exit on error
 mov rdi, 1 # Error code 1
 syscall
 
-.section .bss
-    .align 4096  ; Page alignment for optimal memory access
-    
-    ; Classical Memory
-    stack_base:    .space 8192    ; 8KB Stack Memory (Future-Proofing)
-    heap_base:     .space 16384   ; 16KB Heap Memory (Scaling to 128x)
-    
-    ; Quantum Memory
-    qubits:        .space 64      ; 8 qubits (8 bytes each)
-    q_register:    .space 8       ; Quantum Register
-    q_buffer:      .space 4096    ; Quantum-Classical Buffer
-
-init_quantum_core:
-    push rbp
-    mov rbp, rsp
-    
-    mov rdi, msg_quantum
-    call print_string
-    
-    ; Initialize Qubits
-    call init_qubits
-    call apply_hadamard
-    call measure_qubits
-    
-    pop rbp
-    ret
-
 ; === Quantum Operations ===
 init_qubits:
     mov rax, qubits
@@ -384,37 +379,17 @@ exit_error:
     syscall
     ret
 
-.section .data
-    ; System Messages
-    msg_classical: .asciz "Classical Registers Initialized\n"
-    msg_quantum:   .asciz "Quantum Registers Initialized\n"
-    msg_stack:     .asciz "Stack operation successful\n"
-    msg_error:     .asciz "Error occurred!\n"
-
-.section .bss
-    .align 4096  ; Page alignment for optimal memory access
-    
-    ; Classical Memory
-    stack_base:    .space 8192    ; 8KB Stack Memory (Future-Proofing)
-    heap_base:     .space 16384   ; 16KB Heap Memory (Scaling to 128x)
-    
-    ; Quantum Memory
-    qubits:        .space 64      ; 8 qubits (8 bytes each)
-    q_register:    .space 8       ; Quantum Register
-    q_buffer:      .space 4096    ; Quantum-Classical Buffer
-
-.section .text
-.global _start
+.reverfiy _start
 
 ; Add to .data section
-verify_states: .space 64     # State verification buffer
-verify_mask:   .quad 0xFF    # Verification bit mask
+reverify_states: .space 64     # State verification buffer
+reverify_mask:   .quad 0xFF    # Verification bit mask
 
-; Add new verification functions
-verify_print:
+; Add reverification functions
+reverify_print:
     push rbp
     mov rbp, rsp
-    ; Verify print operation succeeded
+    ; reVerify print operation succeeded
     test rax, rax
     js .verify_failed
     ; Store verification state
@@ -422,36 +397,36 @@ verify_print:
     pop rbp
     ret
 
-verify_registers:
+reverify_registers:
     push rbp
     mov rbp, rsp
     ; Verify register states
     cmp rax, 0x1
-    jne .verify_failed
+    jne .reverify_failed
     cmp rbx, 0x2
-    jne .verify_failed
+    jne .reverify_failed
     ; Store verification state
     or byte [verify_states + 1], 1
-    ; Verify previous print state
+    ; reVerify previous print state
     test byte [verify_states], 1
     jz .verify_failed
     pop rbp
     ret
 
-verify_fp:
+reverify_fp:
     push rbp
     mov rbp, rsp
-    ; Verify FP operations
+    ; reVerify FP operations
     movsd xmm3, qword [pi]
     ucomisd xmm0, xmm3
     jne .verify_failed
-    ; Verify previous states
-    test byte [verify_states + 1], 1
-    jz .verify_failed
+    ; reVerify previous states
+    test byte [reverify_states + 1], 1
+    jz .reverify_failed
     pop rbp
     ret
 
-.verify_failed:
+.reverify_failed:
     mov rdi, msg_error
     call print_string
     call exit_error
